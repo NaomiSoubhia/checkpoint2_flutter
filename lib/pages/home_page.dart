@@ -4,6 +4,7 @@ import 'package:expense_tracker/pages/categorias_page.dart';
 import 'package:expense_tracker/pages/contas_page.dart';
 import 'package:expense_tracker/pages/dashboard_page.dart';
 import 'package:expense_tracker/pages/lista_page.dart';
+import 'package:expense_tracker/pages/listas_page.dart';
 import 'package:expense_tracker/pages/transacoes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';

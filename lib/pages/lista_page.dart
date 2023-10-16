@@ -1,59 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:expense_tracker/models/lista.dart';
+import 'package:expense_tracker/models/item.dart';
+
+
 import 'package:expense_tracker/components/conta_item.dart';
 import 'package:expense_tracker/models/conta.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../repository/contas_repository.dart';
+class ListaPage extends StatefulWidget {
+  final Lista lista;
 
-class ListasPage extends StatefulWidget {
-  const ListasPage({Key? key}) : super(key: key);
+  ListaPage({required this.lista});
 
   @override
-  State<ListasPage> createState() => _ListasPageState();
+  _ListaPageState createState() => _ListaPageState();
 }
 
-class _ListasPageState extends State<ListasPage> {
-  final contasFuture = ContasRepository().listarContas();
+class _ListaPageState extends State<ListaPage> {
+  TextEditingController itemTextController = TextEditingController();
+  List<Item> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    items = widget.lista.item;
+  }
+
+  void addItem() {
+    final newItem = Item(
+      id: items.length + 1, // Você pode ajustar a lógica para gerar um ID único.
+      lista: widget.lista.id,
+      texto: itemTextController.text,
+    );
+
+    setState(() {
+      items.add(newItem);
+      itemTextController.clear();
+    });
+  }
+
+  void deleteItem(Item item) {
+    setState(() {
+      items.remove(item);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contas'),
+        title: Text(widget.lista.titulo),
       ),
-      body: FutureBuilder<List<Conta>>(
-        future: contasFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Erro ao carregar contas"),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text("Nenhuma conta encontrada"),
-            );
-          } else {
-            final contas = snapshot.data!;
-            return ListView.separated(
-              itemCount: contas.length,
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: items.length,
               itemBuilder: (context, index) {
-                final conta = contas[index];
-                return ContaItem(conta: conta);
+                final item = items[index];
+                return ListTile(
+                  title: Text(item.texto),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      deleteItem(item);
+                    },
+                  ),
+                );
               },
-              separatorBuilder: (context, index) => const Divider(),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: "conta-cadastro",
-        onPressed: () {
-          Navigator.pushNamed(context, '/conta-cadastro');
-        },
-        child: const Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: itemTextController,
+                    decoration: InputDecoration(labelText: 'Novo Item'),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: addItem,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
