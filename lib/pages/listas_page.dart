@@ -38,14 +38,24 @@ class _ListasPageState extends State<ListasPage> {
           return ListView.builder(
             itemCount: notes.length,
             itemBuilder: (context, index) {
-              return ListTile(
+           return InkWell(
+      onTap: () {
+        // Adicione o código a ser executado quando um item for clicado
+        // Por exemplo, você pode exibir mais informações sobre a lista ou executar uma ação específica
+      },
+              child: ListTile(
                 title: Text(notes[index]['titulo']),
                 subtitle: Text(notes[index]['descricao']),
-              );
+                
+              ),
+      
+           );
             },
             );
         },
       ),
+   
+      
       floatingActionButton: FloatingActionButton(
         heroTag: "lista-cadastro",
         onPressed: () {
