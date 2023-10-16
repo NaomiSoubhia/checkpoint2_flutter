@@ -47,8 +47,9 @@ class _ListasPageState extends State<ListasPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "lista-cadastro",
         onPressed: () {
-           Navigator.pushNamed(context, '/lista-cadastro');
+          Navigator.pushReplacementNamed(context, '/lista-cadastro');
         },
         child: const Icon(Icons.add),
       ),

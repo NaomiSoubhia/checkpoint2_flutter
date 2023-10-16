@@ -35,12 +35,11 @@ class _ListaCadastroPageState extends State<ListaCadastroPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDescricao(),
-                const SizedBox(height: 30),
-               
-                const SizedBox(height: 30),
                 _buildTitulo(),
                 const SizedBox(height: 30),
+                _buildDescricao(),
+                const SizedBox(height: 30),
+                
                 _buildButton(),
               ],
             ),
