@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../repository/contas_repository.dart';
 class ListaPage extends StatefulWidget {
-  final Lista lista;
+  final  lista;
 
   ListaPage({required this.lista});
 

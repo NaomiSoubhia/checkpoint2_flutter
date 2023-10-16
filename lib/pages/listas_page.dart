@@ -1,3 +1,4 @@
+import 'package:expense_tracker/pages/lista_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase/supabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -11,15 +12,12 @@ class ListasPage extends StatefulWidget {
 
 class _ListasPageState extends State<ListasPage> {
   final client = SupabaseClient(
-     'https://lmtfvyxrmihlsharofjd.supabase.co',
-   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtdGZ2eXhybWlobHNoYXJvZmpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc0ODE3NDEsImV4cCI6MjAxMzA1Nzc0MX0.7jrHphYJAiAmVtSvwXt4w7JqNzOY4L5WgIUNbVhb2ME',
-  
+    'https://lmtfvyxrmihlsharofjd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtdGZ2eXhybWlobHNoYXJvZmpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc0ODE3NDEsImV4cCI6MjAxMzA1Nzc0MX0.7jrHphYJAiAmVtSvwXt4w7JqNzOY4L5WgIUNbVhb2ME',
   );
 
-    final _subscription = Supabase.instance.client.from('lista').stream(primaryKey: ['id']);
-
-
-
+  final _subscription =
+      Supabase.instance.client.from('lista').stream(primaryKey: ['id']);
 
   @override
   Widget build(BuildContext context) {
@@ -30,32 +28,34 @@ class _ListasPageState extends State<ListasPage> {
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _subscription,
         builder: (context, snapshot) {
-          if(!snapshot.hasData){
-            return const Center(child: CircularProgressIndicator(),);
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           final notes = snapshot.data!;
 
           return ListView.builder(
             itemCount: notes.length,
             itemBuilder: (context, index) {
-           return InkWell(
-      onTap: () {
-        // Adicione o código a ser executado quando um item for clicado
-        // Por exemplo, você pode exibir mais informações sobre a lista ou executar uma ação específica
-      },
-              child: ListTile(
-                title: Text(notes[index]['titulo']),
-                subtitle: Text(notes[index]['descricao']),
-                
-              ),
-      
-           );
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ListaPage(numeroLista: index),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  title: Text(notes[index]['titulo']),
+                  subtitle: Text(notes[index]['descricao']),
+                ),
+              );
             },
-            );
+          );
         },
       ),
-   
-      
       floatingActionButton: FloatingActionButton(
         heroTag: "lista-cadastro",
         onPressed: () {
