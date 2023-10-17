@@ -27,7 +27,7 @@ class _ItemEdicaoPageState extends State<ItemEdicaoPage> {
         .eq('id', updatedItem['id'])
         .execute();
 
-    if (response.status != null) {
+    if (response.status != 204) {
       // Item atualizado com sucesso
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Item atualizado com sucesso!')),
