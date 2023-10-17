@@ -21,17 +21,20 @@ class _ItemEdicaoPageState extends State<ItemEdicaoPage> {
 
   Future<void> atualizarItemNoSupabase(Map<String, dynamic> updatedItem) async {
     final client = Supabase.instance.client;
-  final response = await client
+    final response = await client
         .from('item')
         .update(updatedItem)
         .eq('id', updatedItem['id'])
         .execute();
 
-    if (response.status == 200) {
+    if (response.status != null) {
       // Item atualizado com sucesso
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Item atualizado com sucesso!')),
       );
+
+      // Navegação para a página de login após o sucesso
+      Navigator.pushReplacementNamed(context, "/listas");
     } else {
       // Erro ao atualizar o item
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +64,6 @@ class _ItemEdicaoPageState extends State<ItemEdicaoPage> {
               onPressed: () {
                 final updatedItem = {
                   'id': widget.item['id'],
-                  'lista': widget.item['lista'],
                   'texto': textoController.text,
                 };
 
