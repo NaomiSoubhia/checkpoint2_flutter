@@ -1,6 +1,7 @@
 import 'package:expense_tracker/pages/conta_cadastro_page.dart';
 import 'package:expense_tracker/pages/home_page.dart';
 import 'package:expense_tracker/pages/lista_cadastro_page.dart';
+import 'package:expense_tracker/pages/lista_page.dart';
 import 'package:expense_tracker/pages/login_page.dart';
 import 'package:expense_tracker/pages/registar_page.dart';
 import 'package:expense_tracker/pages/splash_page.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         "/transacao-cadastro": (context) => const TransacaoCadastroPage(),
         "/conta-cadastro": (context) => const ContaCadastroPage(),
         "/lista-cadastro": (context) => const ListaCadastroPage(),
+        
       },
       initialRoute: "/splash",
     );

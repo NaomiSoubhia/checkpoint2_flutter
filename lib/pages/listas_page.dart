@@ -34,16 +34,18 @@ class _ListasPageState extends State<ListasPage> {
             );
           }
           final notes = snapshot.data!;
-
+          
           return ListView.builder(
+            
             itemCount: notes.length,
             itemBuilder: (context, index) {
+              int listaId = notes[index]['id'];
               return InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ListaPage(numeroLista: index),
+                      builder: (context) => ListaPage(numLista: listaId),
                     ),
                   );
                 },

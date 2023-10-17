@@ -1,94 +1,77 @@
+import 'package:expense_tracker/pages/item_cadastro_page.dart';
+import 'package:expense_tracker/pages/lista_cadastro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/lista.dart';
 import 'package:expense_tracker/models/item.dart';
-
-
-import 'package:expense_tracker/components/conta_item.dart';
-import 'package:expense_tracker/models/conta.dart';
-import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../repository/contas_repository.dart';
-class ListaPage extends StatefulWidget {
-  final  lista;
 
-  ListaPage({required this.lista});
+class ListaPage extends StatefulWidget {
+  final  numLista;
+  
+
+  ListaPage({required this.numLista});
 
   @override
   _ListaPageState createState() => _ListaPageState();
 }
 
 class _ListaPageState extends State<ListaPage> {
+  
   TextEditingController itemTextController = TextEditingController();
-  List<Item> items = [];
+  final listaNameController = TextEditingController();
+  
+  final client = SupabaseClient(
+    'https://lmtfvyxrmihlsharofjd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtdGZ2eXhybWlobHNoYXJvZmpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc0ODE3NDEsImV4cCI6MjAxMzA1Nzc0MX0.7jrHphYJAiAmVtSvwXt4w7JqNzOY4L5WgIUNbVhb2ME',
+  );
 
-  @override
-  void initState() {
-    super.initState();
-    items = widget.lista.item;
-  }
+  final _subscription =
+      Supabase.instance.client.from('item').stream(primaryKey: ['id']);
 
-  void addItem() {
-    final newItem = Item(
-      id: items.length + 1, // Você pode ajustar a lógica para gerar um ID único.
-      lista: widget.lista.id,
-      texto: itemTextController.text,
-    );
 
-    setState(() {
-      items.add(newItem);
-      itemTextController.clear();
-    });
-  }
 
-  void deleteItem(Item item) {
-    setState(() {
-      items.remove(item);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.lista.titulo),
+        title: const Text('Itens'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return ListTile(
-                  title: Text(item.texto),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      deleteItem(item);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: itemTextController,
-                    decoration: InputDecoration(labelText: 'Novo Item'),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: addItem,
-                ),
-              ],
-            ),
-          ),
-        ],
+   body: StreamBuilder<List<Map<String, dynamic>>>(
+  stream: _subscription,
+  builder: (context, snapshot) {
+    if (!snapshot.hasData) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    final notes = snapshot.data!;
+  
+    final filteredItems = notes.where((item) => int.parse(item['lista']) == widget.numLista).toList();
+
+    return ListView.builder(
+      itemCount: filteredItems.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(filteredItems[index]['texto']),
+        );
+      },
+    );
+  },
+),
+
+
+      floatingActionButton: FloatingActionButton(
+  heroTag: "lista-cadastro",
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemCadastroPage(Nmlista: widget.numLista),
+      ),
+    );
+  },
+        child: const Icon(Icons.add),
       ),
     );
   }
